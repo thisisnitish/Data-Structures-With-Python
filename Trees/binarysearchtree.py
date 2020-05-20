@@ -11,6 +11,9 @@ class BinarySearchTree:
     def __init__(self):
         self.root = None
 
+    def get_root(self):
+        return self.root
+
     def insertNode(self, info):
         if self.root is None:
             self.root = Node(info)
@@ -29,9 +32,37 @@ class BinarySearchTree:
             else:
                 self.utilityInsert(root.right, info)
 
-#    def deleteNode(self, root, info):
-#        if root is None:
-#            return 
+    def deleteNode(self, root, info):
+        if root is None:
+            return root
+        if info < root.info:
+            root.left = self.deleteNode(root.left, info)
+        elif info > root.info:
+            root.right = self.deleteNode(root.right, info)
+        else:
+            # case 1 : delete node with no child or only one child node
+            if root.left is None:
+                temp = root.right
+                root = None
+                return temp
+            elif root.right is None:
+                temp = root.left
+                root = None
+                return temp
+
+            # case 2 : Have 2 child node: then assign this node to its inorder successor
+            temp = self.find_inorder_successor(root.right)
+
+            root.info = temp.info
+            root.right = self.deleteNode(root.right, temp.info)
+        return root
+
+    def find_inorder_successor(self, root):
+        ptr = root
+
+        while ptr.left is not None:
+            ptr = ptr.left
+        return ptr
 
     def DisplayTree(self, orderChoice):
 
@@ -90,7 +121,9 @@ if __name__ == "__main__":
             Tree.insertNode(info)
 
         elif choice == 2:
-            print('This function is yet to implement')
+            #print('This function is yet to implement')
+            info = int(input('Enter the number you want to delete: '))
+            Tree.deleteNode(Tree.get_root(), info)
 
         elif choice == 3:
             print()
